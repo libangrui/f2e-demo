@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <title>前端 Demo 集合</title>
+
+    <style>
+      .originalItem {
+        color: #333;
+      }
+      .addItem {
+        color: green;
+      }
+      .removeItem {
+        color: red;
+      }
+      #one,
+      #two {
+        display: flex;
+        width: 100%;
+      }
+      #one div,
+      #two div {
+        width: 50%;
+        padding: 10px;
+        word-wrap: break-word;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div id="one">
+        <div id="a"></div>
+        <div id="b"></div>
+      </div>
+      <hr />
+      <div id="two">
+        <div id="c"></div>
+        <div id="d"></div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../../lib/jquery-3.6.0.js"></script>
+    <script type="text/javascript" src="./lib/diff.js"></script>
+
+    <script type="text/javascript">
+      const markDiffContent = function (type, source, target) {
+        const targetStr = target.replace(/\s/g, '');
+        let result = source.slice().replace(/\s/g, '');
+
+        if (type === 'added') {
+          result = result.replace(targetStr, `<span class="addItem">${targetStr}</span>`);
+          console.info('added', result);
+
+          return result;
+        }
+
+        if (type === 'removed') {
+          result = result.replace(targetStr, `<span class="removeItem">${targetStr}</span>`);
+          console.info('removed', result);
+
+          return result;
+        }
+
+        return result;
+      };
+
+      const a =
+        '{ "vipList": [ { "description": "永久有效", "id": "3399204907394991010", "vipName": "永久有效", "vipType": 1 }, { "description": "备孕-1岁", "id": "3399204907394991001", "vipName": "备孕～宝宝 1 岁", "vipType": 1 }, { "description": "备孕-出生", "id": "3399204907394991002", "vipName": "买到分娩", "vipType": 1 }] }';
+      const b =
+        '{ "vipList": [ { "description": "永久有效", "description1": "永久有效", "vip111": "永久有效", "vipName": "永久有效", "vipType": 1 }, { "description": "备孕-1岁", "id": "3399204907394991001", "vipName": "备孕～宝宝 1 岁", "vipType": 1 }, { "description": "备孕-出生", "id": "3399204907394991002", "vipName": "买到分娩", "vipType": 1 }, { "aaa": [ { "canSell": false, "discountEndTime": 1585670399000, "discountPrice": 4900, "discountStartTime": 1585033200000, "id": 3399204907394881000, "name": "3月龄-宝宝1岁", "openMode": 4, "price": 19900, "valid": false, "validDays": 730 } ] } ] }';
+
+      const result1 = Diff.diffJson(JSON.parse(a), JSON.parse(b));
+      let newA = '';
+      let newB = '';
+
+      result1.forEach(function (item) {
+        const col = item.added ? 'green' : item.removed ? 'red' : 'grey';
+
+        if (col === 'green') {
+          newB = markDiffContent('added', b, item.value);
+        } else if (col === 'red') {
+          newA = markDiffContent('removed', a, item.value);
+        }
+      });
+
+      $('#a').append(`${a}<br><br><br>`);
+      $('#a').append(newA);
+      $('#b').append(`${b}<br><br><br>`);
+      $('#b').append(newB);
+
+      var c =
+        '{ "collegeVipIds": [ 3399204907394991000, 3399204907394991000, 3399204907394991000 ], "needActivateVipIdRightsMap": { "3399204907394991002": 4176, "3399204907394991003": 4176 }, "vipIdPriceIdMap": { "3399204907394991003": [ 3399204907394881000, 3399204907394881000, 3399204907394881000 ], "3399204907394991010": [ 3399204907394881000 ] }, "vipIdRightsMap": { "3399204907394991004": 524279, "3399204907394991005": 524279, "3399204907394991007": 524279 } }';
+      var d =
+        '{ "collegeVipIds": [ 3399204907394991000, 3399204907394991000 ], "needActivateVipIdRightsMap": { "3399204907394991002": 4176, "3399204907394991003": 4176 }, "userStageIdVipStageRelationsMap": { "20": [ { "goodDeal": true, "vipStageId": 30 }, { "goodDeal": false, "vipStageId": 40 } ], "50": [ { "goodDeal": false, "vipStageId": 90 } ] }, "vipIdPriceIdMap": { "3399204907394991003": [ 3399204907394881000, 3399204907394881000, 3399204907394881000 ], "3399204907394991010": [ 3399204907394881000 ] }, "vipIdRightsMap": { "3399204907394991004": 524279, "3399204907394991005": 524279, "3399204907394991007": 524279 } }';
+
+      const result2 = Diff.diffJson(JSON.parse(c), JSON.parse(d));
+      let newC = '';
+      let newD = '';
+
+      result2.forEach(function (item) {
+        const col = item.added ? 'green' : item.removed ? 'red' : 'grey';
+
+        if (col === 'green') {
+          newD = markDiffContent('added', d, item.value);
+        } else if (col === 'red') {
+          newC = markDiffContent('removed', c, item.value);
+        }
+      });
+
+      $('#c').append(`${c}<br><br><br>`);
+      $('#c').append(newC);
+      $('#d').append(`${d}<br><br><br>`);
+      $('#d').append(newD);
+    </script>
+  </body>
+</html>
