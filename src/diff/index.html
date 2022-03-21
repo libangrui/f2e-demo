@@ -50,7 +50,7 @@
     <script type="text/javascript">
       const markDiffContent = function (type, source, target) {
         const targetStr = target.replace(/\s/g, '');
-        let result = source.slice().replace(/\s/g, '');
+        let result = source.replace(/\s/g, '');
 
         if (type === 'added') {
           result = result.replace(targetStr, `<span class="addItem">${targetStr}</span>`);
@@ -93,22 +93,26 @@
       $('#b').append(`${b}<br><br><br>`);
       $('#b').append(newB);
 
-      var c =
-        '{ "collegeVipIds": [ 3399204907394991000, 3399204907394991000, 3399204907394991000 ], "needActivateVipIdRightsMap": { "3399204907394991002": 4176, "3399204907394991003": 4176 }, "vipIdPriceIdMap": { "3399204907394991003": [ 3399204907394881000, 3399204907394881000, 3399204907394881000 ], "3399204907394991010": [ 3399204907394881000 ] }, "vipIdRightsMap": { "3399204907394991004": 524279, "3399204907394991005": 524279, "3399204907394991007": 524279 } }';
-      var d =
-        '{ "collegeVipIds": [ 3399204907394991000, 3399204907394991000 ], "needActivateVipIdRightsMap": { "3399204907394991002": 4176, "3399204907394991003": 4176 }, "userStageIdVipStageRelationsMap": { "20": [ { "goodDeal": true, "vipStageId": 30 }, { "goodDeal": false, "vipStageId": 40 } ], "50": [ { "goodDeal": false, "vipStageId": 90 } ] }, "vipIdPriceIdMap": { "3399204907394991003": [ 3399204907394881000, 3399204907394881000, 3399204907394881000 ], "3399204907394991010": [ 3399204907394881000 ] }, "vipIdRightsMap": { "3399204907394991004": 524279, "3399204907394991005": 524279, "3399204907394991007": 524279 } }';
+      const c =
+        '{ "collegeVipIds":[ 3399204907394991002, 3399204907394991003, 3399204907394991004],"needActivateVipIdRightsMap": { "3399204907394991002": 4176, "3399204907394991003": 4176 },"vipIdPriceIdMap": { "3399204907394991010": [ 3399204907394881010 ], "3399204907394991003": [ 3399204907394881006, 3399204907394881056, 3399204907394881066 ]},"vipIdRightsMap": { "3399204907394991005": 524279, "3399204907394991004": 524279, "3399204907394991007": 524279}}';
+      const d =
+        '{"collegeVipIds":[3399204907394991000,3399204907394991000],"needActivateVipIdRightsMap":{"3399204907394991002":4176,"3399204907394991003":4176},"vipIdPriceIdMap":{"3399204907394991010":[3399204907394881000],"3399204907394991003":[3399204907394881000,3399204907394881000,3399204907394881000]},"vipIdRightsMap":{"3399204907394991005":524279,"3399204907394991004":524279,"3399204907394991007":524279},"userStageIdVipStageRelationsMap":{"20":[{"vipStageId":30,"goodDeal":true},{"vipStageId":40,"goodDeal":false}],"50":[{"vipStageId":90,"goodDeal":false}]}}';
+      const _c = JSON.parse(c);
+      const _d = JSON.parse(d);
 
-      const result2 = Diff.diffJson(JSON.parse(c), JSON.parse(d));
+      const result2 = Diff.diffJson(_c, _d);
       let newC = '';
       let newD = '';
+
+      console.info('result2', result2);
 
       result2.forEach(function (item) {
         const col = item.added ? 'green' : item.removed ? 'red' : 'grey';
 
         if (col === 'green') {
-          newD = markDiffContent('added', d, item.value);
+          newD = markDiffContent('added', JSON.stringify(_d), item.value);
         } else if (col === 'red') {
-          newC = markDiffContent('removed', c, item.value);
+          newC = markDiffContent('removed', JSON.stringify(_c), item.value);
         }
       });
 
